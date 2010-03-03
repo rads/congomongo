@@ -69,7 +69,7 @@
                          #^String (named ~collection))
      (.setObjectClass ClojureDBObject)))
 
-(defunk fetch 
+(defunk fetch
   "Fetches objects from a collection.
    Note that MongoDB always adds the _id and _ns
    fields to objects returned from the database.
@@ -80,16 +80,18 @@
    :from   -> argument type, same options as above
    :skip   -> number of records to skip
    :limit  -> number of records to return
+   :sort   -> takes a sort map
    :one?   -> defaults to false, use fetch-one as a shortcut
    :count? -> defaults to false, use fetch-count as a shortcut"
   {:arglists
-   '([collection :where :only :limit :skip :as :from :one? :count?])}
+   '([collection :where :only :limit :skip :sort :as :from :one? :count?])}
   [coll :where {} :only [] :as :clojure :from :clojure
-   :one? false :count? false :limit 0 :skip 0]
+   :one? false :count? false :limit 0 :skip 0 :sort nil]
   (let [n-where (coerce where [from :mongo])
         n-only  (coerce-fields only)
         n-col   (get-coll coll)
-        n-limit (if limit (- 0 (Math/abs limit)) 0)]
+        n-limit (if limit (- 0 (Math/abs limit)) 0)
+        n-sort  (when sort (coerce sort [from :mongo]))]
     (cond
       count? (.getCount n-col n-where n-only)
       one?   (when-let [m (.findOne
@@ -97,12 +99,15 @@
                          #^DBObject n-where
                          #^DBObject n-only)]
                (coerce m [:mongo as]))
-      :else  (when-let [m (.find #^DBCollection n-col
-                               #^DBObject n-where
-                               #^DBObject n-only
-                               (int skip)
-                               (int n-limit))]
-               (coerce m [:mongo as] :many :true)))))
+      :else  (when-let [cursor (.find #^DBCollection n-col
+                                      #^DBObject n-where
+                                      #^DBObject n-only)]
+               (do
+                 (doto cursor
+                   (.skip (int skip))
+                   (.limit (int n-limit)))
+                 (if n-sort (.sort cursor #^DBObject n-sort))
+                 (coerce cursor [:mongo as] :many :true))))))
 
 (defn fetch-one [col & options]
   (apply fetch col (concat options '[:one? true])))

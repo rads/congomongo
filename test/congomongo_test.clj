@@ -87,25 +87,34 @@
 ;; ;; mass insert chokes on excessively large inserts
 ;; ;; will need to implement some sort of chunking algorithm
 
- (deftest mass-insert
-   (with-mongo
-     (println "mass insert of 10000 points")
-     (time
-      (mass-insert! :points
-                    (for [x (range 100) y (range 100)]
-                      {:x x
-                       :y y
-                       :z (* x y)})))
-     (is (= (* 100 100)
-            (fetch-count :points))
-         "mass-insert okay")))
+(defn mass-make-points! []
+  (mass-insert! :points
+                (for [x (range 100) y (range 100)]
+                  {:x x
+                   :y y
+                   :z (* x y)})))
 
- (deftest basic-indexing
-   (with-mongo
-     (make-points!)
-     (add-index! :points [:x])
-     (is (some #(= (into {} (% "key")) {"x" 1})
-               (get-indexes :points)))))
+(deftest mass-insert
+  (with-mongo
+    (println "mass insert of 10000 points")
+    (time (mass-make-points!))
+    (is (= (* 100 100)
+           (fetch-count :points))
+        "mass-insert okay")))
+
+(deftest sorting
+  (with-mongo
+    (mass-make-points!)
+    (let [[obj] (fetch :points :limit 1 :sort {:y -1})]
+      (is (= 0 (:x obj)))
+      (is (= 99 (:y obj))))))
+
+(deftest basic-indexing
+  (with-mongo
+    (make-points!)
+    (add-index! :points [:x])
+    (is (some #(= (into {} (% "key")) {"x" 1})
+              (get-indexes :points)))))
 
 (deftest gridfs-insert-and-fetch
   (with-mongo
