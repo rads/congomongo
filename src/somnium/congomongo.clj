@@ -40,7 +40,7 @@
   {:arglists '({:db ? :host "localhost" :port 27017})}
   [:db nil :host "localhost" :port 27017]
    (let [mongo  (Mongo. host port)
-         n-db     (if db (.getDB mongo (named db)) nil)]
+         n-db   (when db (.getDB mongo (named db)))]
      (reset! *mongo-config*
              {:mongo mongo
               :db    n-db})
@@ -92,17 +92,17 @@
         n-limit (if limit (- 0 (Math/abs limit)) 0)]
     (cond
       count? (.getCount n-col n-where n-only)
-      one?   (if-let [m (.findOne
+      one?   (when-let [m (.findOne
                          #^DBCollection n-col
                          #^DBObject n-where
                          #^DBObject n-only)]
-               (coerce m [:mongo as]) nil)
-      :else  (if-let [m (.find #^DBCollection n-col
+               (coerce m [:mongo as]))
+      :else  (when-let [m (.find #^DBCollection n-col
                                #^DBObject n-where
                                #^DBObject n-only
                                (int skip)
                                (int n-limit))]
-               (coerce m [:mongo as] :many :true) nil))))
+               (coerce m [:mongo as] :many :true)))))
 
 (defn fetch-one [col & options]
   (apply fetch col (concat options '[:one? true])))
@@ -255,10 +255,10 @@
   (let [n-where (coerce where [from :mongo])
         n-fs   (get-gridfs fs)]
     (if one?
-      (if-let [m (.findOne #^GridFS n-fs #^DBObject n-where)]
-        (coerce m [:gridfs :clojure]) nil)
-      (if-let [m (.find #^GridFS n-fs #^DBObject n-where)]
-        (coerce m [:gridfs :clojure] :many true) nil))))
+      (when-let [m (.findOne #^GridFS n-fs #^DBObject n-where)]
+        (coerce m [:gridfs :clojure]))
+      (when-let [m (.find #^GridFS n-fs #^DBObject n-where)]
+        (coerce m [:gridfs :clojure] :many true)))))
  
 (defn fetch-one-file [fs & options]
   (apply fetch-files fs (concat options '[:one? true])))
