@@ -106,7 +106,7 @@
                  (doto cursor
                    (.skip (int skip))
                    (.limit (int n-limit)))
-                 (if n-sort (.sort cursor #^DBObject n-sort))
+                 (when n-sort (.sort cursor #^DBObject n-sort))
                  (coerce cursor [:mongo as] :many :true))))))
 
 (defn fetch-one [col & options]
