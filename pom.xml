@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project>
   <modelVersion>4.0.0</modelVersion>
-  <groupId>congomongo</groupId>
+  <groupId>org.clojars.rads</groupId>
   <artifactId>congomongo</artifactId>
   <version>0.2.0-SNAPSHOT</version>
   <name>congomongo</name>
@@ -9,7 +9,7 @@
   <scm>
     <connection>scm:git:git://github.com/rads/congomongo.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/rads/congomongo.git</developerConnection>
-    <tag>3b57361b03e9378bcf77ca67f8ad8d0bf4d51586</tag>
+    <tag>56ac7edd616735b9669881e9f5052cf2282ee000</tag>
     <url>http://github.com/rads/congomongo</url>
   </scm>
   <repositories>
