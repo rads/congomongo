@@ -3,14 +3,14 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>congomongo</groupId>
   <artifactId>congomongo</artifactId>
-  <version>0.1.2-SNAPSHOT</version>
+  <version>0.2.0-SNAPSHOT</version>
   <name>congomongo</name>
   <description>clojure-friendly api for MongoDB</description>
   <scm>
-    <connection>scm:git:git://github.com/somnium/congomongo.git</connection>
-    <developerConnection>scm:git:ssh://git@github.com/somnium/congomongo.git</developerConnection>
-    <tag>3f800e4338bcbe649c444c38e50e5c82bfccd878</tag>
-    <url>http://github.com/somnium/congomongo</url>
+    <connection>scm:git:git://github.com/rads/congomongo.git</connection>
+    <developerConnection>scm:git:ssh://git@github.com/rads/congomongo.git</developerConnection>
+    <tag>3b57361b03e9378bcf77ca67f8ad8d0bf4d51586</tag>
+    <url>http://github.com/rads/congomongo</url>
   </scm>
   <repositories>
     <repository>

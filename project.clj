@@ -1,5 +1,5 @@
 (defproject congomongo
-  "0.1.2-SNAPSHOT"
+  "0.2.0-SNAPSHOT"
   :description "clojure-friendly api for MongoDB"
   :dependencies [[org.clojure/clojure "1.1.0-master-SNAPSHOT"]
                  [org.clojure/clojure-contrib "1.1.0-master-SNAPSHOT"]
