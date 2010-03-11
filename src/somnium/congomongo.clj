@@ -102,12 +102,10 @@
       :else  (when-let [cursor (.find #^DBCollection n-col
                                       #^DBObject n-where
                                       #^DBObject n-only)]
-               (do
-                 (doto cursor
-                   (.skip (int skip))
-                   (.limit (int n-limit)))
-                 (when n-sort (.sort cursor #^DBObject n-sort))
-                 (coerce cursor [:mongo as] :many :true))))))
+               (.skip cursor (int skip))
+               (.limit cursor (int n-limit))
+               (when n-sort (.sort cursor #^DBObject n-sort))
+               (coerce cursor [:mongo as] :many :true)))))
 
 (defn fetch-one [col & options]
   (apply fetch col (concat options '[:one? true])))
