@@ -26,7 +26,7 @@
             [somnium.congomongo.util   :only [named defunk]]
             [somnium.congomongo.coerce :only [coerce coerce-fields]]
             [clojure.contrib.json read write])
-  (:import  [com.mongodb Mongo DB DBCollection DBObject ObjectId]
+  (:import  [com.mongodb Mongo DB DBCollection DBObject ObjectId Bytes Transformer]
             [com.mongodb.gridfs GridFS]
             [com.mongodb.util JSON]
             [somnium.congomongo ClojureDBObject]))
@@ -209,6 +209,26 @@
   [collection]
   (.drop #^DBCollection (.getCollection #^DB (:db @*mongo-config*)
                                         #^String (named collection))))
+
+(defn transformer
+  "Creates an object that implements com.mongodb.Transformer. Used for
+  encoding and decoding hooks."
+  [f]
+  (proxy [Transformer] []
+    (transform [x] (f x))))
+
+(defn add-encoding-hook! [class f]
+  "Adds a function to apply to all values of the specified class
+  before inserting into the database. The function takes a single
+  argument that is the value to be manipulated."
+  (Bytes/addEncodingHook class (transformer f)))
+
+(defn add-decoding-hook!
+  "Adds a function to apply to all values with the specified BSON type
+  fetched from the database. The function takes a single argument that
+  is the value to be manipulated."
+  [type f]
+  (Bytes/addDecodingHook type (transformer f)))
 
 ;;;; GridFS, contributed by Steve Purcell
 ;;;; question: keep the camelCase keyword for :contentType ?
