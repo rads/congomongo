@@ -217,10 +217,11 @@
   (proxy [Transformer] []
     (transform [x] (f x))))
 
-(defn add-encoding-hook! [class f]
+(defn add-encoding-hook!
   "Adds a function to apply to all values of the specified class
   before inserting into the database. The function takes a single
   argument that is the value to be manipulated."
+  [class f]
   (Bytes/addEncodingHook class (transformer f)))
 
 (defn add-decoding-hook!
