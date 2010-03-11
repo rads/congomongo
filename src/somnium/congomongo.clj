@@ -205,8 +205,8 @@
   (seq (.getCollectionNames #^DB (:db @*mongo-config*))))
 
 (defn drop-coll!
-  [collection]
   "Permanently deletes a collection. Use with care."
+  [collection]
   (.drop #^DBCollection (.getCollection #^DB (:db @*mongo-config*)
                                         #^String (named collection))))
 
